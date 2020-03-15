@@ -27,7 +27,9 @@ totalSteps <- totalSteps[complete.cases(totalSteps)]
 par(mar = c(5, 4, 2, 1))
 hist(totalSteps, 
      main = "Histogram of Total Number of Steps Per Day", 
-     xlab = "Total Number of Steps taken per Day")
+     xlab = "Total Number of Steps taken per Day",
+     col = "sky blue",
+     breaks = 50)
 ```
 
 ![](PA1_template_files/figure-html/unnamed-chunk-2-1.png)<!-- -->
@@ -64,7 +66,8 @@ par(mar = c(5, 4, 2, 1))
 with(activeAvg, plot(intervals, averageSteps, type = "l",
                      xlab = "Time Intervals (in minutes)",
                      ylab = "Average Steps per Interval",
-                     main = "Average Daily Activity Pattern"))
+                     main = "Average Daily Activity Pattern",
+                     col = "blue"))
 ```
 
 ![](PA1_template_files/figure-html/unnamed-chunk-5-1.png)<!-- -->
@@ -112,8 +115,11 @@ Code for calculating the total number of steps taken per day, and the histogram:
 
 ```r
 totalSteps2 <- tapply(active3$steps, active3$date, sum, simplify = TRUE)
-hist(totalSteps2, main = "Histogram of Total Number of Steps per day",
-     xlab = "Total number of steps taken per day")
+hist(totalSteps2, 
+     main = "Histogram of Total Number of Steps per day",
+     xlab = "Total number of steps taken per day",
+     col = "sky blue",
+     breaks = 50)
 ```
 
 ![](PA1_template_files/figure-html/unnamed-chunk-9-1.png)<!-- -->
@@ -167,7 +173,7 @@ Code for creating a panel plot, split by weekdays and weekends:
 
 
 ```r
-library(lattice)
+library(ggplot2)
 active4 <- data.frame(active3, WeekFactor = weekFactor)
 activeWeekSplit <- split(active4, active4$WeekFactor)
 activeWeekday <- activeWeekSplit[["weekday"]]
@@ -182,13 +188,13 @@ Ints <- c(activeAvg1$Group.1, activeAvg2$Group.1)
 St <- c(activeAvg1$x, activeAvg2$x)
 dy <- as.factor(c(as.character(activeAvg1$day), as.character(activeAvg2$day)))
 activeAvgDay <- data.frame(intervals = Ints, steps = St, days = dy)
-print(xyplot(steps ~ intervals | days, 
-             data = activeAvgDay, 
-             layout = c(1, 2), 
-             type = "l", 
-             xlab = "Interval", 
-             ylab = "Number of Steps",
-             main = "Average Number of Steps per Interval"))
+g <- ggplot(activeAvgDay, mapping = aes(intervals, steps))
+print(g + geom_line(aes(color = days))
+      + labs(title = "Average Number Of Steps Taken Per Interval",
+             x = "Interval",
+             y = "Average Number of Steps")
+      + theme_bw()
+      + labs(color = "Days"))
 ```
 
 ![](PA1_template_files/figure-html/unnamed-chunk-13-1.png)<!-- -->
